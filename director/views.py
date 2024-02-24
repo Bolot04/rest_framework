@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework import status
 
-# Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from . import seriallizer, models
@@ -43,7 +42,7 @@ def movie_detail_view(request, id):
 
 @api_view(['GET'])
 def review_list_view(request):
-    reviews = models.Review.objects.get(id=id)
+    reviews = models.Review.objects.all()
     data = seriallizer.ReviewSerializer(reviews, many=True).data
     return Response(data=data)
 
