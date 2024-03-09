@@ -3,21 +3,35 @@ from rest_framework import serializers
 from . import models
 
 
-class DirectorSerializer(serializers.ModelSerializer):
-    movies_count = serializers.SerializerMethodField()
+def validate_name_min_length(value, min_length):
+    if len(value) < min_length:
+        raise serializers.ValidationError(f'минимальная длина для этого поля должна быть {min_length}')
+    return value
 
+
+class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Director
         fields = 'id name movies_count'.split()
 
+    movies_count = serializers.SerializerMethodField()
+
     def get_movies_count(self, obj):
         return obj.movies.count()
+
+    def validate_name(self, value):
+        validate_name_min_length(value, 5)
+        return value
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Review
         fields = '__all__'
+
+    def validate_text(self, value):
+        validate_name_min_length(value, 5)
+        return value
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -35,3 +49,7 @@ class MovieSerializer(serializers.ModelSerializer):
             return total_stars / num_reviews
         else:
             return 0.0
+
+    def validate_title(self, value):
+        validate_name_min_length(value, 5)
+        return value
