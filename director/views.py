@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from . import seriallizer, models
 from .models import Movie, Director, Review
@@ -104,3 +105,35 @@ def review_detail_api_view(request, id):
     elif request.method == 'DELETE':
         queryset.delete()
         return Response(status.HTTP_204_NO_CONTENT)
+
+
+class MovieListAPIView(ListCreateAPIView):
+    queryset = Movie.objects.prefetch_related('tag').all()
+    serializer_class = MovieSerializer
+
+
+class MovieDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+
+class DirectorListAPIView(ListCreateAPIView):
+    queryset = Director.objects.all()
+    serializer_class = DirectorSerializer
+
+
+class DirectorDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Director.objects.all()
+    serializer_class = DirectorSerializer
+
+
+class ReviewListAPIView(ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+class ReviewDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
