@@ -16,6 +16,7 @@ from director.views import DirectorListAPIView, MovieListAPIView, MovieDetailAPI
 #     path('', include('users.urls')),
 # ]
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('categories/', DirectorListAPIView.as_view()),
     path('products/categories/<int:pk>/', DirectorListAPIView.as_view()),
     path('products/', MovieListAPIView.as_view()),

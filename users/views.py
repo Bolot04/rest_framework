@@ -85,23 +85,22 @@ class RegistrationAPIView(APIView):
     serializer_class = UserRegisterSerializer
 
     def post(self, request):
-        def post(self, request):
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            user = serializer.save()
-            # Генерируем и сохраняем код подтверждения в базе данных
-            code = ''.join([str(random.randint(0, 9)) for _ in range(5)])
-            confirmation = UserConfirmation.objects.create(user=user, code=code)
-            confirmation.save()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # Генерируем и сохраняем код подтверждения в базе данных
+        code = ''.join([str(random.randint(0, 9)) for _ in range(5)])
+        confirmation = UserConfirmation.objects.create(user=user, code=code)
+        confirmation.save()
 
-            # Отправляем код подтверждения на почту
-            subject = 'Код для подтверждения'
-            message = f'Ваш код подтверждения: {code}'
-            sender = settings.EMAIL_HOST_USER
-            recipient_list = [user.email]
-            send_mail(subject, message, sender, recipient_list)
+        # Отправляем код подтверждения на почту
+        subject = 'Код для подтверждения'
+        message = f'Ваш код подтверждения: {code}'
+        sender = settings.EMAIL_HOST_USER
+        recipient_list = [user.email]
+        send_mail(subject, message, sender, recipient_list)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ConfirmUserAPIView(APIView):
